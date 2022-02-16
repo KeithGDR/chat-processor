@@ -189,7 +189,10 @@ public Action OnSayText2(UserMsg msg_id, BfRead msg, const int[] players, int pl
 	switch (g_Proto)
 	{
 		case true: PbReadString(msg, "msg_name", sFlag, sizeof(sFlag));
-		case false: BfReadString(msg, sFlag, sizeof(sFlag));
+		case false: {
+			BfReadByte(msg);
+			BfReadString(msg, sFlag, sizeof(sFlag));
+		}
 	}
 	
 	//Trim the flag so there's no potential issues with retrieving the specified format rules.
