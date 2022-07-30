@@ -5,10 +5,10 @@
 
 ////////////////////
 //Defines
-#define PLUGIN_NAME "Chat-Processor"
+#define PLUGIN_NAME "[ANY] Chat-Processor"
 #define PLUGIN_AUTHOR "Drixevel"
-#define PLUGIN_DESCRIPTION "Replacement for Simple Chat Processor."
-#define PLUGIN_VERSION "2.2.9"
+#define PLUGIN_DESCRIPTION "Replacement for Simple Chat Processor to help plugins access an easy API for chat modifications."
+#define PLUGIN_VERSION "2.3.0"
 #define PLUGIN_CONTACT "https://drixevel.dev/"
 
 ////////////////////
