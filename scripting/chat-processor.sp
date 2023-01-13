@@ -8,7 +8,7 @@
 #define PLUGIN_NAME "[ANY] Chat-Processor"
 #define PLUGIN_AUTHOR "Drixevel"
 #define PLUGIN_DESCRIPTION "Replacement for Simple Chat Processor to help plugins access an easy API for chat modifications."
-#define PLUGIN_VERSION "2.3.0"
+#define PLUGIN_VERSION "2.3.1"
 #define PLUGIN_CONTACT "https://drixevel.dev/"
 
 ////////////////////
@@ -159,6 +159,21 @@ public void OnConfigsExecuted()
 		
 		Call_StartForward(g_Forward_OnReloadChatData);
 		Call_Finish();
+	}
+}
+
+////////////////////
+// On All Plugins Loaded
+
+public void OnAllPluginsLoaded() {
+	if (LibraryExists("scp")) {
+		SetFailState("Simple Chat Processor (SCP) is installed, please remove SCP to use Chat-Processor.");
+	}
+}
+
+public void OnLibraryAdded(const char[] name) {
+	if (StrEqual(name, "scp")) {
+		SetFailState("Simple Chat Processor (SCP) is installed, please remove SCP to use Chat-Processor.");
 	}
 }
 
