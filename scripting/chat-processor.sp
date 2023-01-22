@@ -8,7 +8,7 @@
 #define PLUGIN_NAME "[ANY] Chat-Processor"
 #define PLUGIN_AUTHOR "Drixevel"
 #define PLUGIN_DESCRIPTION "Replacement for Simple Chat Processor to help plugins access an easy API for chat modifications."
-#define PLUGIN_VERSION "2.3.1"
+#define PLUGIN_VERSION "2.3.2"
 #define PLUGIN_CONTACT "https://drixevel.dev/"
 
 ////////////////////
@@ -27,6 +27,7 @@ ConVar convar_StripColors;
 ConVar convar_ColorsFlags;
 ConVar convar_DeadChat;
 ConVar convar_AllChat;
+ConVar convar_SpecChat;
 ConVar convar_RestrictDeadChat;
 ConVar convar_AddGOTV;
 
@@ -120,6 +121,7 @@ public void OnPluginStart()
 	convar_ColorsFlags = CreateConVar("sm_chatprocessor_colors_flag", "b", "Flags required to use the color name and message. Needs sm_chatprocessor_strip_colors 1", FCVAR_NOTIFY);
 	convar_DeadChat = CreateConVar("sm_chatprocessor_deadchat", "1", "Controls how dead communicate.\n(0 = off, 1 = on)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	convar_AllChat = CreateConVar("sm_chatprocessor_allchat", "0", "Allows both teams to communicate with each other through team chat.\n(0 = off, 1 = on)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	convar_SpecChat = CreateConVar("sm_chatprocessor_specchat", "1", "Allow spectators to chat to the teams or just to each other.\n(0 = off, 1 = on)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	convar_RestrictDeadChat = CreateConVar("sm_chatprocessor_restrictdeadchat", "0", "Restricts all chat for the dead entirely.\n(0 = off, 1 = on)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	convar_AddGOTV = CreateConVar("sm_chatprocessor_addgotv", "1", "Add GOTV client to recipients list. (Only effects games with GOTV or SourceTV)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	
@@ -263,27 +265,31 @@ public Action OnSayText2(UserMsg msg_id, BfRead msg, const int[] players, int pl
 
 	bool bDeadTalk = convar_DeadChat.BoolValue;
 	bool bAllTalk = convar_AllChat.BoolValue;
+	bool bSpecChat = convar_SpecChat.BoolValue;
 	bool bRestrictDeadChat = convar_RestrictDeadChat.BoolValue;
 	int team = GetClientTeam(author);
 
 	for (int i = 1; i < MaxClients + 1; i++)
 	{
-		if (!IsClientInGame(i) || (!convar_AddGOTV.BoolValue && IsFakeClient(i)))
+		if (!IsClientInGame(i) || IsFakeClient(i))
 			continue;
 
-		if (convar_AddGOTV.BoolValue && IsFakeClient(i) && IsClientSourceTV(i) && recipients.FindValue(GetClientUserId(i)) == -1)
+		if (convar_AddGOTV.BoolValue && IsClientSourceTV(i) && recipients.FindValue(GetClientUserId(i)) == -1)
 		{
 			recipients.Push(GetClientUserId(i));
 			continue;
 		}
 
-		if (bRestrictDeadChat && !IsPlayerAlive(author))
-			continue;
-
 		if (!IsPlayerAlive(author) && !bDeadTalk && IsPlayerAlive(i))
 			continue;
 
 		if (!bAllTalk && StrContains(sFlag, "_All") == -1 && team != GetClientTeam(i))
+			continue;
+		
+		if (!bSpecChat && team == 1 && GetClientTeam(i) > 1)
+			continue;
+		
+		if (bRestrictDeadChat && !IsPlayerAlive(author))
 			continue;
 		
 		recipients.Push(GetClientUserId(i));

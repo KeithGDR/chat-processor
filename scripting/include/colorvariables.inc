@@ -994,7 +994,7 @@ stock void AddColors(StringMap hTrie)
 stock bool SupportsColorCodes()
 {
 	EngineVersion iEngineVersion = GetEngineVersion();
-	bool g_SupportsColorCodes = (iEngineVersion == Engine_CSS || iEngineVersion == Engine_TF2 || iEngineVersion == Engine_HL2DM || iEngineVersion == Engine_DODS) ? true : false;
+	bool g_SupportsColorCodes = (iEngineVersion == Engine_CSS || iEngineVersion == Engine_TF2 || iEngineVersion == Engine_HL2DM || iEngineVersion == Engine_DODS || Engine_SDK2013) ? true : false;
 	return g_SupportsColorCodes;
 }
 
