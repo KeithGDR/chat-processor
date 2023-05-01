@@ -185,6 +185,8 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 {
 	if (convar_Status.BoolValue && client > 0 && StrContains(command, "say") != -1)
 		g_NewMSG[client] = true;
+
+	return Plugin_Continue;
 }
 
 ////////////////////
@@ -527,6 +529,8 @@ public int Native_GetFlagFormatString(Handle plugin, int numParams)
 	g_MessageFormats.GetString(sFlag, sFormat, sizeof(sFormat));
 
 	SetNativeString(2, sFormat, GetNativeCell(3));
+
+	return 0;
 }
 
 ////////////////////
